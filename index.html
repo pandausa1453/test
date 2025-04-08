@@ -1,51 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Math Helper</title>
-  <link rel="icon" href="https://ssl.gstatic.com/docs/doclist/images/mediatype/icon_1_document_x16.png">
-  <style>
-    body {
-      background: #0f172a;
-      color: white;
-      font-family: sans-serif;
-      text-align: center;
-      margin-top: 100px;
-    }
-    input {
-      padding: 10px;
-      width: 300px;
-      border-radius: 5px;
-      border: none;
-      font-size: 1rem;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 1rem;
-      border-radius: 5px;
-      border: none;
-      background-color: #1e40af;
-      color: white;
-      cursor: pointer;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Proxy</title>
 </head>
 <body>
-  <h1>Math Helper</h1>
-  <p>Type a URL like <code>https://coolmathgames.com</code> below:</p>
-  <input type="text" id="urlInput" placeholder="Enter URL" />
+  <h1>Ultraviolet Proxy</h1>
+  <input type="text" id="urlInput" placeholder="Enter a website like coolmathgames.com">
   <button onclick="go()">Go</button>
 
+  <!-- Load UV scripts in correct order -->
   <script src="uv.bundle.js"></script>
-  <script src="uv.config.js"></script>
   <script>
-    const proxy = new UVServiceWorker();
-    proxy.init();
+    window.onload = () => {
+      // Now Codec is available, define config
+      window.__uv$config = {
+        prefix: '/test/service/',
+        bare: 'https://uv.bare.workers.dev/',
+        codec: new Codec(),
+        tab: {
+          title: 'Google Docs',
+          icon: 'https://ssl.gstatic.com/docs/doclist/images/mediatype/icon_1_document_x16.png',
+        },
+      };
 
-    async function go() {
-      const input = document.getElementById('urlInput').value;
-      const encoded = __uv$config.encodeUrl(input);
-      location.href = __uv$config.prefix + encoded;
+      // Register service worker
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./uv.sw.js', {
+          scope: '/test/service/',
+        }).then(() => {
+          console.log('✅ Service Worker registered');
+        }).catch(err => {
+          console.error('❌ Service Worker failed:', err);
+        });
+      }
+    };
+
+    // Go button function
+    function go() {
+      const input = document.getElementById('urlInput').value.trim();
+      if (!input || !window.__uv$config) return;
+
+      let url = input;
+      if (!/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+      }
+
+      const encoded = __uv$config.codec.encode(url);
+      window.location.href = __uv$config.prefix + encoded;
     }
   </script>
 </body>
