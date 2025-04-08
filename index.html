@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Math Helper</title>
+  <link rel="icon" href="https://ssl.gstatic.com/docs/doclist/images/mediatype/icon_1_document_x16.png">
+  <style>
+    body {
+      background: #0f172a;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 100px;
+    }
+    input {
+      padding: 10px;
+      width: 300px;
+      border-radius: 5px;
+      border: none;
+      font-size: 1rem;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: none;
+      background-color: #1e40af;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Math Helper</h1>
+  <p>Type a URL like <code>https://coolmathgames.com</code> below:</p>
+  <input type="text" id="urlInput" placeholder="Enter URL" />
+  <button onclick="go()">Go</button>
+
+  <script src="uv.bundle.js"></script>
+  <script src="uv.config.js"></script>
+  <script>
+    const proxy = new UVServiceWorker();
+    proxy.init();
+
+    async function go() {
+      const input = document.getElementById('urlInput').value;
+      const encoded = __uv$config.encodeUrl(input);
+      location.href = __uv$config.prefix + encoded;
+    }
+  </script>
+</body>
+</html>
