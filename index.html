@@ -3,18 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Proxy</title>
+  <title>Ultraviolet Proxy</title>
 </head>
 <body>
   <h1>Ultraviolet Proxy</h1>
   <input type="text" id="urlInput" placeholder="Enter a website like coolmathgames.com">
   <button onclick="go()">Go</button>
 
-  <!-- Load UV scripts in correct order -->
-  <script src="uv.bundle.js"></script>
+  <!-- Load uv.bundle.js first -->
+  <script src="uv.bundle.js" onload="initUV()"></script>
+
   <script>
-    window.onload = () => {
-      // Now Codec is available, define config
+    function initUV() {
+      // Codec is guaranteed to exist now
       window.__uv$config = {
         prefix: '/test/service/',
         bare: 'https://uv.bare.workers.dev/',
@@ -25,7 +26,7 @@
         },
       };
 
-      // Register service worker
+      // Register the service worker
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./uv.sw.js', {
           scope: '/test/service/',
@@ -35,9 +36,9 @@
           console.error('❌ Service Worker failed:', err);
         });
       }
-    };
+    }
 
-    // Go button function
+    // Called when user clicks Go
     function go() {
       const input = document.getElementById('urlInput').value.trim();
       if (!input || !window.__uv$config) return;
