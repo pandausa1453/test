@@ -11,11 +11,18 @@
   <button onclick="go()">Go</button>
 
   <!-- Load uv.bundle.js first -->
-  <script src="uv.bundle.js" onload="initUV()"></script>
+  <script src="uv.bundle.js"></script>
 
   <script>
-    function initUV() {
-      // Codec is guaranteed to exist now
+    // Wait until the window is fully loaded before running code
+    window.addEventListener('load', () => {
+      // Ensure Codec is defined
+      if (typeof Codec === 'undefined') {
+        console.error('❌ Codec is not defined yet');
+        return;
+      }
+
+      // Now that Codec is loaded, define the UV config
       window.__uv$config = {
         prefix: '/test/service/',
         bare: 'https://uv.bare.workers.dev/',
@@ -36,9 +43,9 @@
           console.error('❌ Service Worker failed:', err);
         });
       }
-    }
+    });
 
-    // Called when user clicks Go
+    // Go button function
     function go() {
       const input = document.getElementById('urlInput').value.trim();
       if (!input || !window.__uv$config) return;
