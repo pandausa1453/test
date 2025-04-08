@@ -14,15 +14,15 @@
   <script src="uv.bundle.js"></script>
 
   <script>
-    // Wait until the window is fully loaded before running code
-    window.addEventListener('load', () => {
-      // Ensure Codec is defined
+    // Polling for Codec to be defined
+    function waitForCodec() {
       if (typeof Codec === 'undefined') {
-        console.error('❌ Codec is not defined yet');
+        console.log('Codec is not defined yet, retrying...');
+        setTimeout(waitForCodec, 100); // Retry after 100ms
         return;
       }
 
-      // Now that Codec is loaded, define the UV config
+      // Now that Codec is defined, we can safely proceed
       window.__uv$config = {
         prefix: '/test/service/',
         bare: 'https://uv.bare.workers.dev/',
@@ -33,7 +33,7 @@
         },
       };
 
-      // Register the service worker
+      // Register service worker
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./uv.sw.js', {
           scope: '/test/service/',
@@ -43,7 +43,10 @@
           console.error('❌ Service Worker failed:', err);
         });
       }
-    });
+    }
+
+    // Wait until uv.bundle.js has loaded and Codec is defined
+    window.addEventListener('load', waitForCodec);
 
     // Go button function
     function go() {
