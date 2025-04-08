@@ -1,0 +1,1 @@
+// uv.sw.js content placeholder
