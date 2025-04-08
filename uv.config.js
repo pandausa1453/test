@@ -1,10 +1,9 @@
 self.__uv$config = {
-    prefix: '/service/',
-    bare: 'https://incog.dev/bare/',
-    encodeUrl: Ultraviolet.codec.xor.encode,
-    decodeUrl: Ultraviolet.codec.xor.decode,
-    handler: '/uv.handler.js',
-    bundle: '/uv.bundle.js',
-    config: '/uv.config.js',
-    sw: '/uv.sw.js',
+  prefix: '/test/service/',
+  bare: 'https://uv.bare.workers.dev/',
+  codec: new Codec(),
+  tab: {
+    title: 'Google Docs',
+    icon: 'https://ssl.gstatic.com/docs/doclist/images/mediatype/icon_1_document_x16.png',
+  },
 };
