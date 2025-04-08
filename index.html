@@ -10,48 +10,27 @@
   <input type="text" id="urlInput" placeholder="Enter a website like coolmathgames.com">
   <button onclick="go()">Go</button>
 
-  <!-- Load uv.bundle.js first -->
+  <!-- Load core Ultraviolet scripts -->
   <script src="uv.bundle.js"></script>
+  <script src="uv.handler.js"></script>
+  <script src="uv.config.js"></script>
 
   <script>
-    // Polling for Codec to be defined
-    function waitForCodec() {
-      if (typeof Codec === 'undefined') {
-        console.log('Codec is not defined yet, retrying...');
-        setTimeout(waitForCodec, 100); // Retry after 100ms
-        return;
-      }
-
-      // Now that Codec is defined, we can safely proceed
-      window.__uv$config = {
-        prefix: '/test/service/',
-        bare: 'https://uv.bare.workers.dev/',
-        codec: new Codec(),
-        tab: {
-          title: 'Google Docs',
-          icon: 'https://ssl.gstatic.com/docs/doclist/images/mediatype/icon_1_document_x16.png',
-        },
-      };
-
-      // Register service worker
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./uv.sw.js', {
-          scope: '/test/service/',
-        }).then(() => {
-          console.log('✅ Service Worker registered');
-        }).catch(err => {
-          console.error('❌ Service Worker failed:', err);
-        });
-      }
+    // Register the service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./uv.sw.js', {
+        scope: __uv$config.prefix,
+      }).then(() => {
+        console.log('✅ Ultraviolet Service Worker registered');
+      }).catch((err) => {
+        console.error('❌ Failed to register Service Worker:', err);
+      });
     }
-
-    // Wait until uv.bundle.js has loaded and Codec is defined
-    window.addEventListener('load', waitForCodec);
 
     // Go button function
     function go() {
       const input = document.getElementById('urlInput').value.trim();
-      if (!input || !window.__uv$config) return;
+      if (!input || !window.__uv$config || !window.__uv$config.codec) return;
 
       let url = input;
       if (!/^https?:\/\//i.test(url)) {
